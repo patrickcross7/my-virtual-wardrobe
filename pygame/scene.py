@@ -29,18 +29,18 @@ class Scene:
             self.screen.get_width() / 2, self.screen.get_height() / 2
         )
 
-    def display(self, xPos, yPos):
+    def display(self, landmarks):
         self.screen.fill("black")
 
-        text_surface = self.font.render(
-            f"x coordinate = {xPos}\n y coordinate = {yPos}", True, (0, 0, 0)
-        )
-        xPos = int(xPos)
-        yPos = int(yPos)
+        if landmarks:
+            for landmark in landmarks:
+                xPos, yPos = landmarks[landmark]
 
-        # print(f"x coordinate = {xPos}\n y coordinate = {yPos}")
-        pygame.draw.circle(self.screen, (255, 0, 0), (xPos, yPos), 20)
-        self.screen.blit(text_surface, (0, 0))
+                xPos = int(xPos)
+                yPos = int(yPos)
+
+                # print(f"x coordinate = {xPos}\n y coordinate = {yPos}")
+                pygame.draw.circle(self.screen, (255, 0, 0), (xPos, yPos), 20)
 
         # flip() the display to put your work on screen
         pygame.display.flip()
@@ -61,6 +61,4 @@ class Scene:
 
             landmarks = cv_obj.get_body_landmarks(show_video_frame=True)
 
-            x_left_shoulder, y_left_shoulder = landmarks["left_shoulder"]
-
-            self.display(x_left_shoulder, y_left_shoulder)
+            self.display(landmarks)
