@@ -36,7 +36,8 @@ class Scene:
             self.screen.blit(player_image, player_rect)
 
         mouse = pygame.mouse.get_pos()
-        print(mouse)
+        # print(mouse)
+        self.screen.blit(shirt, (mouse[0], mouse[1]))
         self.player_pos.x = mouse[0]
         self.player_pos.y = mouse[1]
 
