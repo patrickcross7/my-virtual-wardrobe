@@ -17,11 +17,11 @@ class Scene:
         self.screen.fill("black")        
 
         pygame.draw.circle(self.screen, "red", self.player_pos, 40)
-
-
-
+        shirt = pygame.image.load("../png/one.png")
+        shirt = pygame.transform.scale(shirt, (100,200))
         mouse = pygame.mouse.get_pos()
-        print(mouse)
+        # print(mouse)
+        self.screen.blit(shirt, (mouse[0], mouse[1]))
         self.player_pos.x = mouse[0]
         self.player_pos.y = mouse[1]
 
