@@ -1,4 +1,14 @@
 import pygame
+import os
+
+def load_images(path_to_directory):
+    image_dict = {}
+    for filename in os.listdir(path_to_directory):
+        if filename.endswith('.png'):
+            path = os.path.join(path_to_directory, filename)
+            key = filename[:-4]
+            image_dict[key] = pygame.image.load(path).convert()
+    return image_dict
 
 class Scene:
 
@@ -8,17 +18,23 @@ class Scene:
         # self.screen = pygame.display.set_mode((1920, 1080), self.flags)
         self.screen = pygame.display.set_mode((900,900))
         self.clock = pygame.time.Clock()
+        self.image_dict = load_images("/home/patrickcross7/hackviolet24/pygame/images")
         self.running = True
         self.dt = 0
 
         self.player_pos = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
 
+
+
     def display(self):
         self.screen.fill("black")        
 
-        pygame.draw.circle(self.screen, "red", self.player_pos, 40)
-        shirt = pygame.image.load("../png/one.png")
-        shirt = pygame.transform.scale(shirt, (100,200))
+        player_image = self.image_dict.get("redshirt")
+        
+        if player_image is not None:
+            player_rect = player_image.get_rect(center = pygame.mouse.get_pos())
+            self.screen.blit(player_image, player_rect)
+
         mouse = pygame.mouse.get_pos()
         # print(mouse)
         self.screen.blit(shirt, (mouse[0], mouse[1]))
