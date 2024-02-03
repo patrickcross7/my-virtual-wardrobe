@@ -1,14 +1,17 @@
 import pygame
 import os
+from open_cv import open_cv_camera
+
 
 def load_images(path_to_directory):
     image_dict = {}
     for filename in os.listdir(path_to_directory):
-        if filename.endswith('.png'):
+        if filename.endswith(".png"):
             path = os.path.join(path_to_directory, filename)
             key = filename[:-4]
             image_dict[key] = pygame.image.load(path).convert()
     return image_dict
+
 
 class Scene:
 
@@ -16,48 +19,38 @@ class Scene:
         pygame.init()
         self.flags = pygame.FULLSCREEN
         # self.screen = pygame.display.set_mode((1920, 1080), self.flags)
-        self.screen = pygame.display.set_mode((900,900))
+        self.screen = pygame.display.set_mode((1920, 1090))
         self.clock = pygame.time.Clock()
-        self.image_dict = load_images("/home/patrickcross7/hackviolet24/pygame/images")
         self.running = True
         self.dt = 0
+        self.font = pygame.font.Font(None, 34)
 
-        self.player_pos = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
+        self.player_pos = pygame.Vector2(
+            self.screen.get_width() / 2, self.screen.get_height() / 2
+        )
 
+    def display(self, xPos, yPos):
+        self.screen.fill("black")
 
+        text_surface = self.font.render(
+            f"x coordinate = {xPos}\n y coordinate = {yPos}", True, (0, 0, 0)
+        )
+        xPos = int(xPos)
+        yPos = int(yPos)
 
-    def display(self):
-        self.screen.fill("black")        
-
-        player_image = self.image_dict.get("redshirt")
-        
-        if player_image is not None:
-            player_rect = player_image.get_rect(center = pygame.mouse.get_pos())
-            self.screen.blit(player_image, player_rect)
-
-        mouse = pygame.mouse.get_pos()
-        print(mouse)
-        self.player_pos.x = mouse[0]
-        self.player_pos.y = mouse[1]
-
-        # keys = pygame.key.get_pressed()
-        # if keys[pygame.K_q]:
-        #     pygame.quit()
-        # if keys[pygame.K_w]:
-        #     self.player_pos.y -= 300 * self.dt
-        # if keys[pygame.K_s]:
-        #     self.player_pos.y += 300 * self.dt
-        # if keys[pygame.K_a]:
-        #     self.player_pos.x -= 300 * self.dt
-        # if keys[pygame.K_d]:
-        #     self.player_pos.x += 300 * self.dt
+        # print(f"x coordinate = {xPos}\n y coordinate = {yPos}")
+        pygame.draw.circle(self.screen, (255, 0, 0), (xPos, yPos), 20)
+        self.screen.blit(text_surface, (0, 0))
 
         # flip() the display to put your work on screen
         pygame.display.flip()
 
         self.dt = self.clock.tick(60) / 1000
-    
+
     def loop(self):
+
+        cv_obj = open_cv_camera()
+
         running = True
         while running:
             # poll for events
@@ -66,6 +59,8 @@ class Scene:
                 if event.type == pygame.QUIT:
                     running = False
 
-            self.display()
+            landmarks = cv_obj.get_body_landmarks(show_video_frame=True)
 
-            
+            x_left_shoulder, y_left_shoulder = landmarks["left_shoulder"]
+
+            self.display(x_left_shoulder, y_left_shoulder)
