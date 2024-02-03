@@ -41,8 +41,41 @@ while True:
 
     # img = detector.findPose(video_frame)
 
-    # lmList, bboxInfo = detector.findPosition(img)
 
+    img, bboxInfo = detector.findPosition(video_frame)
+    
+    if bboxInfo is not None:
+        
+        keypoints = bboxInfo["keypoints"]
+        
+        left_shoulder = keypoints[11]
+        right_shoulder = keypoints[12]
+        left_hip = keypoints[23]
+        right_hip = keypoints[24]
+
+        # Unpacking coordinates for each keypoint
+        x_left_shoulder, y_left_shoulder = left_shoulder
+        x_right_shoulder, y_right_shoulder = right_shoulder
+        x_left_hip, y_left_hip = left_hip
+        x_right_hip, y_right_hip = right_hip
+
+        # Printing the coordinates of the keypoints
+        print("Left Shoulder:", left_shoulder)
+        print("Right Shoulder:", right_shoulder)
+        print("Left Hip:", left_hip)
+        print("Right Hip:", right_hip)
+        
+            # Drawing lines between keypoints for demonstration
+        cv2.line(video_frame, left_shoulder, left_hip, (0, 255, 0), 2)
+        cv2.line(video_frame, right_shoulder, right_hip, (0, 255, 0), 2)
+
+        # Drawing circles at keypoints for visualization
+        cv2.circle(video_frame, left_shoulder, 5, (0, 0, 255), cv2.FILLED)
+        cv2.circle(video_frame, right_shoulder, 5, (0, 0, 255), cv2.FILLED)
+        cv2.circle(video_frame, left_hip, 5, (0, 0, 255), cv2.FILLED)
+        cv2.circle(video_frame, right_hip, 5, (0, 0, 255), cv2.FILLED)
+
+        
     # TRUE TO SHOW BOX FOR DEBUGGING
     faces = detect_bounding_box_for_faces(
         video_frame, True
@@ -53,7 +86,7 @@ while True:
         break
 
     if debugging:
-        # print every 1 second
+        # print every 3 second
         current_time = time.time()
         if current_time - last_printed_time >= 3:
             print(
