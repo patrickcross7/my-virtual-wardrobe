@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+require('dotenv').config();
 // Set the web server
 const app = express();
 app.use(express.json());
@@ -14,7 +14,7 @@ app.get(
 
 // Connect to MongoDB database
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb+srv://admin:admin@hackviolet.pko9vmw.mongodb.net/db?retryWrites=true&w=majority", {
+mongoose.connect(process.env.MONGO_URI, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
