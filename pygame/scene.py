@@ -1,7 +1,9 @@
+import time
 import pygame
 import os
 from open_cv import open_cv_camera
 import math
+import client_caller
 
 
 def load_images(path_to_directory):
@@ -68,8 +70,8 @@ class Scene:
         right_ankle = landmarks.get("right_ankle")
 
         # the images to be displayed
-        chest_image = self.image_dict.get("t_shirt")
-        leg_image = self.image_dict.get("google")
+        chest_image = self.image_dict.get("chest_image")
+        leg_image = self.image_dict.get("leg_image")
 
         # initlazie the center of the chest and the area of the chest as defaults, if the landmarks are not found
         center_x, center_y = 0, 0
@@ -91,8 +93,8 @@ class Scene:
             and (chest_image)
         ):
 
-            print(f"left_shoulder = {left_shoulder}")
-            print(f"right_shoulder = {right_shoulder}")
+            # print(f"left_shoulder = {left_shoulder}")
+            # print(f"right_shoulder = {right_shoulder}")
             center_x = (
                 ((left_shoulder[0] + right_shoulder[0]) // 2)
                 + ((left_hip[0] + right_hip[0]) // 2)
@@ -115,13 +117,7 @@ class Scene:
 
         # if the ankle landmarks are found, and the coordinates are within the screen and we have a leg image
         if (left_ankle and right_ankle) and (
-            (
-                left_ankle[0] < 1920
-                and left_ankle[1] < 1200
-                and right_ankle[0] < 1920
-                and right_ankle[1] < 1200
-            )
-            and (leg_image)
+            (left_ankle[0] < 1920 and right_ankle[0] < 1920) and (leg_image)
         ):
 
             # calculate the angle of the left leg and the right leg
@@ -187,16 +183,16 @@ class Scene:
             self.screen.blit(new_left_leg, (left_hip[0], left_hip[1] + 100))
             self.screen.blit(new_right_leg, (right_hip[0], right_hip[1] + 100))
 
-            print(
-                f"left leg angle = {angle_left_leg}, right leg angle = {angle_right_leg}"
-            )
+            # print(
+            #     f"left leg angle = {angle_left_leg}, right leg angle = {angle_right_leg}"
+            # )
 
         pygame.draw.circle(self.screen, (0, 255, 0), (center_x, center_y), 10)
 
         if chest_image:
             image_rect = chest_image.get_rect()
             image_area = image_rect.width * image_rect.height
-            scaling_factor = (area_of_chest / image_area) ** 0.5 * 1.25
+            scaling_factor = ((area_of_chest / image_area) ** 0.5) * 1.1
             scaled_image = pygame.transform.scale(
                 chest_image,
                 (
@@ -205,7 +201,7 @@ class Scene:
                 ),
             )
             image_x = center_x - scaled_image.get_rect().width // 2
-            image_y = center_y - (scaled_image.get_rect().height // 2) + 90
+            image_y = center_y - (scaled_image.get_rect().height // 2)
             self.screen.blit(scaled_image, (image_x, image_y))
 
         if landmarks and tracking:
@@ -227,10 +223,17 @@ class Scene:
 
         cv_obj = open_cv_camera()
 
+        last_time = time.time()
         running = True
         while running:
             # poll for events
             # pygame.QUIT event means the user clicked X to close your window
+            if time.time() - last_time > 1:
+                client_caller.get_chest()
+                client_caller.get_legs()
+                self.image_dict = load_images("images")
+                last_time = time.time()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False

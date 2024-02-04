@@ -12,20 +12,23 @@ export default function DrawingPage() {
   const [isPressed, setIsPressed] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
   const [alignment, setAlignment] = React.useState('left');
-  const [currentImg, setCurrentImg] = useState("./white-tshirt.jpg");
+  const [currentImg, setCurrentImg] = useState("left");
+  const [currentAPI, setCurrentAPI] = useState("shirt")
 
   const handleAlignment = (event, newAlignment) => {
     setAlignment(newAlignment);
     switch (newAlignment) {
       case 'left':
         setCurrentImg("left");
+        setCurrentAPI("shirt")
         break;
       case 'middle':
         setCurrentImg("middle");
+        setCurrentAPI("pants")
         break;
       case 'right':
         setCurrentImg("right");
-        console.log(currentImg);
+        // console.log(currentImg);
         break;
       default:
         setCurrentImg('./white-tshirt');
@@ -102,7 +105,15 @@ export default function DrawingPage() {
 
   const handleColorChange = (color) => setCurrentColor(color.hex);
 
-  const saveDrawing = () => {
+  const saveDrawing = () =>{
+    if(currentAPI === "shirt"){
+        saveShirt();
+    }
+    else{
+        savePants();
+    }
+  }
+  const saveShirt = () => {
     const canvas = canvasReference.current;
     const imgData = canvas.toDataURL("image/png");
   
@@ -124,13 +135,38 @@ export default function DrawingPage() {
       .catch(error => {
         console.error('Error uploading image:', error.message);
       });
-    const link = document.createElement("a");
-    link.href = imgData;
-    link.download = alignment === "left" ? "shirt_drawing.png" : "pants_drawing.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // const link = document.createElement("a");
+    // link.href = imgData;
+    // link.download = alignment === "left" ? "shirt_drawing.png" : "pants_drawing.png";
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
   };
+  const savePants = () =>{
+    const canvas = canvasReference.current;
+    const imgData = canvas.toDataURL("image/png");
+  
+    // Remove the data URI header
+    const base64Data = imgData.replace(/^data:image\/png;base64,/, "");
+
+    // Assuming your endpoint is "https://example.com/upload"
+    const endpoint = 'http://localhost:4000/db/pants/create';
+  
+    axios.post(endpoint, { title:"pants" , season: "fall", image: base64Data }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => {
+        console.log('Image uploaded successfully:', response.data);
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error.message);
+      });
+
+  }
+
 
 
   return (
@@ -177,8 +213,8 @@ export default function DrawingPage() {
           transition: "0.3s ease-in "
         },
       }}  
-      value="middle" aria-label="middle"> Pants Left </ToggleButton>
-      <ToggleButton sx={{
+      value="middle" aria-label="middle"> Pant Leg </ToggleButton>
+      {/* <ToggleButton sx={{
          '&.MuiToggleButton-root': {
           background: "white",
           color: "black"
@@ -195,7 +231,7 @@ export default function DrawingPage() {
           transition: "0.3s ease-in "
         },
       }}  
-      value="right" aria-label="right"> Pants Right </ToggleButton>
+      value="right" aria-label="right"> Pants Right </ToggleButton> */}
     </ToggleButtonGroup>
 
       <canvas

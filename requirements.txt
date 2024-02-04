@@ -7,4 +7,5 @@ pillow==10.2.0
 opencv-python==4.9.0.80
 cvzone==1.6.1
 mediapipe==0.10.9
+requests==2.31.0
 
