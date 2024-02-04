@@ -1,121 +1,41 @@
 import "./CollectionCards.css";
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
-import React, { useState } from 'react';
-import pic from './../../Assets/testPics/test.png';
 
 function CollectionCards() {
-    const [cards] = useState([
-        
-        {
-        title: "Grey T-shirt",
-        text: "A normal t-shirt",
-        pic: pic
+    const [cards, setCards] = useState([]);
 
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-        title: "Grey T-shirt",
-        text: "A normal t-shirt",
-        pic: pic
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/db/shirts');
+                setCards(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        fetchData();
+    }, []);
 
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-        title: "Grey T-shirt",
-        text: "A normal t-shirt",
-        pic: pic
 
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        {
-            title: "Grey T-shirt",
-            text: "A normal t-shirt",
-            pic: pic
-    
-        },
-        
-        
 
-  
-        
-    
-    
-    ])    
     return (
-        <>
-            <section>
-                <div className="container">
-                    <h1>
-                        <div className="cards">
-                        {
-                            cards.map((card, i) => (
-                                <div key={i} className="card">
-                                    <h3>
-                                        {card.title}
-                                        <img className="image" src={card.pic} alt={card.title} />
-                                        <p>{card.text}</p>
-                                    </h3>
-                                </div>
-
-                            ))
-                        }                   
-                        </div>
-                    </h1>
-                </div>
-            </section>
-
-        </>
+        <section>
+            <div className="container">
+                <h1>
+                    <div className="cards">
+                        {cards.map((card, i) => (
+                            <div key={i} className="card">
+                                <h3>{card.title}</h3>
+                                <img className="image" src={card.image} alt={card.title} />
+                                <p>{card.season}</p>
+                            </div>
+                        ))}
+                    </div>
+                </h1>
+            </div>
+        </section>
     );
 }
 

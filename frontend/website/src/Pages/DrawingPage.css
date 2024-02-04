@@ -31,3 +31,21 @@ button {
     width: 100%;
     padding-bottom: 5px;
 }
+
+#left{
+    background: url('./white-tshirt.jpg') no-repeat center center;
+    background-size: cover;
+    cursor: crosshair;
+}
+
+#middle{
+    background: url('./pants.jpeg') no-repeat center center;
+    background-size: cover;
+    cursor: crosshair;
+}
+
+#right {
+    background: url('./pants.jpeg') no-repeat center center;
+    background-size: cover;
+    cursor: crosshair;
+}
