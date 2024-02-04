@@ -5,6 +5,10 @@ const fs = require("fs");
 const Jimp = require("jimp");
 
 require('dotenv').config();
+let showShirt = {}
+let showPants = {}
+
+
 // Set the web server
 const app = express();
 app.use(express.json());
@@ -34,6 +38,34 @@ const pantsSchema = require("./models/pants");
 const router = express.Router();
 app.use("/db", router);
 
+router.route("/currshirt").get((req, res) => {
+    if(Object.keys(showShirt).length === 0){
+	shirtSchema.find().sort({created: -1}).limit(1).then(function (items) {
+		// console.log(items);
+		//find all items are returns
+        showShirt = items
+        console.log(showShirt)
+		res.json(items);
+	});
+}
+else{
+    res.json(showShirt)
+}
+});
+router.route("/currpants").get((req, res) => {
+    if(Object.keys(showPants).length === 0){
+        pantsSchema.find().sort({created: -1}).limit(1).then(function (items) {
+            // console.log(items);
+            //find all items are returns
+            showPants = items
+            // console.log(showShirt)
+            res.json(items);
+        });
+    }
+    else{
+        res.json(showPants)
+    }
+});
 //get all shirt entries
 router.route("/shirts").get((req, res) => {
 	shirtSchema.find().then(function (items) {
@@ -83,7 +115,7 @@ router.route("/pants/update/:id").post((req, res) => {
 //create shirt entry
 router.route("/shirts/create").post((req, res) => {
 	// console.log(req.body);
-    crop("shirt", req.body.image)
+    // crop("shirt", req.body.image)
 	shirtSchema.create({title: req.body.title, season: req.body.season,image: req.body.image}).then((item) => {
 		res.json(item)
 	});
