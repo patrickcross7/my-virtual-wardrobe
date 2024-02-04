@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SliderPicker } from 'react-color';
 import "./DrawingPage.css";
+import axios from 'axios'
 
 export default function DrawingPage() {
   const canvasReference = useRef(null);
@@ -80,12 +81,25 @@ export default function DrawingPage() {
   const saveDrawing = () => {
     const canvas = canvasReference.current;
     const imgData = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.href = imgData;
-    link.download = "drawing.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  
+    // Remove the data URI header
+    const base64Data = imgData.replace(/^data:image\/png;base64,/, "");
+
+    // Assuming your endpoint is "https://example.com/upload"
+    const endpoint = 'http://localhost:4000/db/shirts/create';
+  
+    axios.post(endpoint, { title:"shirt" , season: "fall",image: base64Data }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => {
+        console.log('Image uploaded successfully:', response.data);
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error.message);
+      });
   };
 
   return (
@@ -98,6 +112,7 @@ export default function DrawingPage() {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        id="draw-canvas"
       />
       <div className="color-picker">
         <SliderPicker color={currentColor} onChange={handleColorChange} />

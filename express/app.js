@@ -1,6 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const fs = require("fs");
+const Jimp = require("jimp");
+
 require('dotenv').config();
 // Set the web server
 const app = express();
@@ -53,9 +56,7 @@ router.route("/pants").get((req, res) => {
 router.route("/shirt/update/:id").post((req, res) => {
 	shirtSchema.findById(req.params.id).then((item) => {
 		//need to add in the code here later to update the entry
-
-		item
-			.save()
+		item.save()
 			.then((item) => {
 				res.json;
 			})
@@ -68,7 +69,6 @@ router.route("/shirt/update/:id").post((req, res) => {
 router.route("/pants/update/:id").post((req, res) => {
 	pantsSchema.findById(req.params.id).then((item) => {
 		//need to add in the code here later to update the entry
-
 		item
 			.save()
 			.then((item) => {
@@ -82,24 +82,20 @@ router.route("/pants/update/:id").post((req, res) => {
 
 //create shirt entry
 router.route("/shirts/create").post((req, res) => {
-	console.log(req.body);
-	shirtSchema.create({"hi": "hi"}).then((item) => {
-		shirtSchema.find().then(function (items) {
-			// console.log(items);
-			//find all items are returns
-			res.json(items);
-		});
+	// console.log(req.body);
+    crop("shirt", req.body.image)
+	shirtSchema.create({title: req.body.title, season: req.body.season,image: req.body.image}).then((item) => {
+		res.json(item)
 	});
 });
 
 //create pants entry
 router.route("/pants/create").post((req, res) => {
 	// console.log(req.body);
-	pantsSchema.create({"hi": "hi"}).then((item) => {
-		pantsSchema.find().then(function (items) {
-			// console.log(items);
-			//find all items are returns
-			res.json(items);
+	pantsSchema.create({title: req.body.title, season: req.body.season,leftImage: req.body.leftImage, rightImage: req.body.rightImage}).then((item) => {
+		pantsSchema.find().then(function (item) {
+
+            res.json(item)
 		});
 	});
 });
@@ -115,6 +111,24 @@ router.route("/pants/delete/:id").delete((req, res) => {
 	
 });
 
+
+
+function crop(type, base64 ){
+
+    const buffer = Buffer.from(base64, "base64");
+    fs.writeFileSync("temp.png", buffer);
+Jimp.read("temp.png")
+  .then((lenna) => {
+    return lenna
+      .resize(256, 256) // resize
+      .crop(0,0,100,100)
+      .write("temp1.png") // save
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
+}
 
 const port = 4000;
 app.listen(port, () => console.log(`Hello world app listening on port ${port}!`));
