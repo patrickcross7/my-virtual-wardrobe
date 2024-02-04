@@ -5,7 +5,6 @@ import axios from 'axios'
 import * as React from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { green } from "@mui/material/colors";
 
 export default function DrawingPage() {
   const canvasReference = useRef(null);
@@ -13,10 +12,25 @@ export default function DrawingPage() {
   const [isPressed, setIsPressed] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
   const [alignment, setAlignment] = React.useState('left');
+  const [currentImg, setCurrentImg] = useState("./white-tshirt.jpg");
 
   const handleAlignment = (event, newAlignment) => {
     setAlignment(newAlignment);
-
+    switch (newAlignment) {
+      case 'left':
+        setCurrentImg("left");
+        break;
+      case 'middle':
+        setCurrentImg("middle");
+        break;
+      case 'right':
+        setCurrentImg("right");
+        console.log(currentImg);
+        break;
+      default:
+        setCurrentImg('./white-tshirt');
+        break;
+    }
   };
 
   const clearCanvas = () => {
@@ -192,8 +206,9 @@ export default function DrawingPage() {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        id="draw-canvas"
-      />
+        id={currentImg}
+      > 
+      </canvas>
       <div className="color-picker">
         <SliderPicker color={currentColor} onChange={handleColorChange} />
       </div>
