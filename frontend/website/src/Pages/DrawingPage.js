@@ -1,12 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { SliderPicker } from 'react-color';
 import "./DrawingPage.css";
+import * as React from 'react';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { green } from "@mui/material/colors";
 
 export default function DrawingPage() {
   const canvasReference = useRef(null);
   const contextReference = useRef(null);
   const [isPressed, setIsPressed] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
+  const [alignment, setAlignment] = React.useState('left');
+
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment);
+
+  };
 
   const clearCanvas = () => {
     const canvas = canvasReference.current;
@@ -63,8 +73,8 @@ export default function DrawingPage() {
   useEffect(() => {
     const canvas = canvasReference.current;
     const context = canvas.getContext("2d");
-    canvas.width = 700;
-    canvas.height = 700;
+    canvas.width = 600;
+    canvas.height = 600;
     context.lineCap = "round";
     context.lineWidth = 5;
     contextReference.current = context;
@@ -82,14 +92,78 @@ export default function DrawingPage() {
     const imgData = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = imgData;
-    link.download = "drawing.png";
+    link.download = alignment === "left" ? "shirt_drawing.png" : "pants_drawing.png";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
+
   return (
     <div className="container">
+     <ToggleButtonGroup
+      value={alignment}
+      exclusive
+      onChange={handleAlignment}
+      aria-label="text alignment"
+      className="toggles"
+    >
+      <ToggleButton sx={{
+        '&.MuiToggleButton-root': {
+          background: "white",
+          color: "black"
+        },
+        '&.MuiToggleButton-root:hover': {
+          background: "white",
+          opacity: 0.5,
+          transition: "0.3s ease-in "
+
+        },
+        '&.Mui-selected': {
+          color: 'grey', // Color when selected
+          background: "rgba(10, 10, 1, 0.5)", 
+          transition: "0.3s ease-in "
+        },
+      }}  
+      value="left" aria-label="left"> Shirt </ToggleButton>
+     <ToggleButton sx={{
+         '&.MuiToggleButton-root': {
+          background: "white",
+          color: "black"
+        },
+        '&.MuiToggleButton-root:hover': {
+          background: "white",
+          opacity: 0.5,
+          transition: "0.3s ease-in "
+
+        },
+        '&.Mui-selected': {
+          color: 'grey', // Color when selected
+          background: "rgba(10, 10, 1, 0.5)", 
+          transition: "0.3s ease-in "
+        },
+      }}  
+      value="middle" aria-label="middle"> Pants Left </ToggleButton>
+      <ToggleButton sx={{
+         '&.MuiToggleButton-root': {
+          background: "white",
+          color: "black"
+        },
+        '&.MuiToggleButton-root:hover': {
+          background: "white",
+          opacity: 0.5,
+          transition: "0.3s ease-in "
+
+        },
+        '&.Mui-selected': {
+          color: 'grey', // Color when selected
+          background: "rgba(10, 10, 1, 0.5)", 
+          transition: "0.3s ease-in "
+        },
+      }}  
+      value="right" aria-label="right"> Pants Right </ToggleButton>
+    </ToggleButtonGroup>
+
       <canvas
         ref={canvasReference}
         onMouseDown={handleMouseDown}
