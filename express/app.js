@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const fs = require("fs");
 const Jimp = require("jimp");
+const imageToBase64 = require('image-to-base64');
 
 require('dotenv').config();
 let showShirt = {}
@@ -115,10 +116,17 @@ router.route("/pants/update/:id").post((req, res) => {
 //create shirt entry
 router.route("/shirts/create").post((req, res) => {
 	// console.log(req.body);
-    // crop("shirt", req.body.image)
-	shirtSchema.create({title: req.body.title, season: req.body.season,image: req.body.image}).then((item) => {
-		res.json(item)
-	});
+    crop("shirt", req.body.image)
+
+    imageToBase64("temp1.png") // Path to the image
+    .then(
+        (response) => {
+            shirtSchema.create({title: req.body.title, season: req.body.season,image: response}).then((item) => {
+                res.json(item)
+            });
+        }
+    )
+	
 });
 
 //create pants entry
@@ -153,8 +161,8 @@ Jimp.read("temp.png")
   .then((lenna) => {
     return lenna
       .resize(256, 256) // resize
-      .crop(0,0,100,100)
       .write("temp1.png") // save
+    //   .crop(0,0,100,10
   })
   .catch((err) => {
     console.error(err);
