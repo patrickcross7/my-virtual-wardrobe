@@ -1,6 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const fs = require("fs");
+const Jimp = require("jimp");
+
 require('dotenv').config();
 // Set the web server
 const app = express();
@@ -80,6 +83,7 @@ router.route("/pants/update/:id").post((req, res) => {
 //create shirt entry
 router.route("/shirts/create").post((req, res) => {
 	// console.log(req.body);
+    crop("shirt", req.body.image)
 	shirtSchema.create({title: req.body.title, season: req.body.season,image: req.body.image}).then((item) => {
 		res.json(item)
 	});
@@ -107,6 +111,24 @@ router.route("/pants/delete/:id").delete((req, res) => {
 	
 });
 
+
+
+function crop(type, base64 ){
+
+    const buffer = Buffer.from(base64, "base64");
+    fs.writeFileSync("temp.png", buffer);
+Jimp.read("temp.png")
+  .then((lenna) => {
+    return lenna
+      .resize(256, 256) // resize
+      .crop(0,0,100,100)
+      .write("temp1.png") // save
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
+}
 
 const port = 4000;
 app.listen(port, () => console.log(`Hello world app listening on port ${port}!`));
