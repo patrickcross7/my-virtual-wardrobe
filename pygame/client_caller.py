@@ -19,7 +19,7 @@ def get_chest():
 
 
 def get_legs():
-    res = requests.get("http://localhost:4000/db/currshirt")
+    res = requests.get("http://localhost:4000/db/currpants")
     print(res.json())
     im_b64 = res.json()[0]["image"]
     img_bytes = base64.b64decode(im_b64)
