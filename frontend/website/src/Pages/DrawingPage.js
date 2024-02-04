@@ -12,7 +12,7 @@ export default function DrawingPage() {
   const [isPressed, setIsPressed] = useState(false);
   const [currentColor, setCurrentColor] = useState("#000000");
   const [alignment, setAlignment] = React.useState('left');
-  const [currentImg, setCurrentImg] = useState("./white-tshirt.jpg");
+  const [currentImg, setCurrentImg] = useState("left");
   const [currentAPI, setCurrentAPI] = useState("shirt")
 
   const handleAlignment = (event, newAlignment) => {
@@ -28,7 +28,7 @@ export default function DrawingPage() {
         break;
       case 'right':
         setCurrentImg("right");
-        console.log(currentImg);
+        // console.log(currentImg);
         break;
       default:
         setCurrentImg('./white-tshirt');

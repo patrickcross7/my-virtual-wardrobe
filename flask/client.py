@@ -5,12 +5,12 @@ import requests
 from io import BytesIO
 from PIL import Image
 # THIS CODE IS AN EXAMPLE OF HOW TO GET THE IMAGES FROM MONGODB CONVERT TO PNG
-res = requests.get("http://localhost:4000/db/shirts")
+res = requests.get("http://localhost:4000/db/currpants")
 
-print(res.json()[2]['image'])
+print(res.json()[0]['image'])
 
 
-im_b64 = res.json()[2]['image']
+im_b64 = res.json()[0]['image']
 img_bytes = base64.b64decode(im_b64)
 
 # convert bytes data to PIL Image object
