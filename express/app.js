@@ -127,12 +127,16 @@ router.route("/shirts/create").post((req, res) => {
 //create pants entry
 router.route("/pants/create").post((req, res) => {
 	// console.log(req.body);
-	pantsSchema.create({ title: req.body.title, season: req.body.season, leftImage: req.body.leftImage, rightImage: req.body.rightImage }).then((item) => {
-		pantsSchema.find().then(function (item) {
+    crop("pants", req.body.image)
 
-			res.json(item)
-		});
-	});
+	imageToBase64("temp1.png") // Path to the image
+		.then(
+			(response) => {
+				pantsSchema.create({ title: req.body.title, season: req.body.season, image: response }).then((item) => {
+					res.json(item)
+				});
+			}
+		)
 });
 
 //delete one shirt endpoint
