@@ -9,8 +9,9 @@ from PIL import Image
 
 
 def get_image():
-    res = requests.get("http://localhost:4000/db/shirts")
-    im_b64 = res.json()[2]["image"]
+    res = requests.get("http://localhost:4000/db/currshirt")
+    print(res.json())
+    im_b64 = res.json()[0]["image"]
     img_bytes = base64.b64decode(im_b64)
     # # convert bytes data to PIL Image object
     img = Image.open(BytesIO(img_bytes))
