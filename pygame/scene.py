@@ -20,6 +20,7 @@ class Scene:
         self.flags = pygame.FULLSCREEN
         current_directory = os.path.dirname(__file__)
         images_directory = os.path.join(current_directory, "images")
+        print(images_directory)
         self.image_dict = load_images(images_directory)
         # self.screen = pygame.display.set_mode((1920, 1080), self.flags)
         self.screen = pygame.display.set_mode((1920, 1090))
@@ -34,28 +35,27 @@ class Scene:
 
     def display(self, landmarks):
         self.screen.fill("black")
-        
+
         left_shoulder = landmarks.get("left_shoulder")
         right_shoulder = landmarks.get("right_shoulder")
         left_hip = landmarks.get("left_hip")
         right_hip = landmarks.get("right_hip")
-        
+
         image_to_draw = self.image_dict.get("google")
-        
+
         if left_shoulder and right_shoulder and left_hip and right_hip:
-            
-            center_x = (left_shoulder[0] + right_shoulder[0] + left_hip[0] + right_hip[0])
-            center_y = (left_shoulder[1] + right_shoulder[1] + left_hip[1] + right_hip[1])
-            
+
+            center_x = left_shoulder[0] + right_shoulder[0] + left_hip[0] + right_hip[0]
+            center_y = left_shoulder[1] + right_shoulder[1] + left_hip[1] + right_hip[1]
+
             pygame.draw.circle(self.screen, (0, 255, 0), (center_x, center_y), 10)
-            
-            
+
         if image_to_draw is not None:
-            
+
             image_rect = image_to_draw.get_rect()
             image_x = center_x - image_rect.width // 2
             image_y = center_y - image_rect.height // 2
-            
+
             self.screen.blit(image_to_draw, (image_x, image_y))
 
         if landmarks:
@@ -64,7 +64,7 @@ class Scene:
 
                 xPos = int(xPos)
                 yPos = int(yPos)
-                
+
                 # print(f"x coordinate = {xPos}\n y coordinate = {yPos}")
                 pygame.draw.circle(self.screen, (255, 0, 0), (xPos, yPos), 20)
 
