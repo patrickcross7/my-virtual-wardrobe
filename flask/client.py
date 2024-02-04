@@ -2,23 +2,20 @@ import base64
 import json                    
 
 import requests
+from io import BytesIO
+from PIL import Image
+# THIS CODE IS AN EXAMPLE OF HOW TO GET THE IMAGES FROM MONGODB CONVERT TO PNG
+res = requests.get("http://localhost:4000/db/shirts")
 
-api = 'http://localhost:8080/test'
-image_file = '../png/one.png'
+print(res.json()[2]['image'])
 
-with open(image_file, "rb") as f:
-    im_bytes = f.read()        
-im_b64 = base64.b64encode(im_bytes).decode("utf8")
 
-# headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+im_b64 = res.json()[2]['image']
+img_bytes = base64.b64decode(im_b64)
 
-f = open("base64.txt", "a")
-f.write(im_b64)
-f.close()
-# payload = json.dumps({"image": im_b64, "other_key": "value"})
-# response = requests.post(api, data=payload, headers=headers)
-# try:
-#     data = response.json()     
-#     print(data)                
-# except requests.exceptions.RequestException:
-#     print(response.text)
+# convert bytes data to PIL Image object
+img = Image.open(BytesIO(img_bytes))
+
+
+img.save("test.png", format="png")
+
