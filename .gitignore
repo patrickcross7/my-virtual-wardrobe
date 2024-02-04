@@ -3,3 +3,5 @@ __pycache__/
 node_modules/
 pygame/images/
 .env
+/hackviolet24/pygame/images
+

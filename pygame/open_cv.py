@@ -15,20 +15,26 @@ class open_cv_camera:
             cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
         )
 
+        width = int(self.webcam.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(self.webcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        print(f"width: {width}, height: {height}")
+
     def release(self):
         self.webcam.release()
         cv2.destroyAllWindows()
 
     def __del__(self):
         self.release()
+        self.release()
 
     def get_body_landmarks(
         self, show_bbox=False, debugging=False, show_video_frame=False
     ):
-
         current_time = time.time()
 
         result, video_frame = self.webcam.read()  # read frames from the video
+
         if result is False:
             print("There was an error reading the frame")
             return  # terminate the method if the frame is not read successfully
@@ -194,13 +200,13 @@ class open_cv_camera:
         return faces
 
 
-# FOR TESTING PURPOSES
-cv_obj = open_cv_camera()
+# # FOR TESTING PURPOSES
+# cv_obj = open_cv_camera()
 
-while True:
-    landmark = cv_obj.get_body_landmarks(show_video_frame=True)
+# while True:
+#     landmark = cv_obj.get_body_landmarks(show_video_frame=True)
 
-    print(landmark)
+#     print(landmark)
 
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
+#     if cv2.waitKey(1) & 0xFF == ord("q"):
+#         break
