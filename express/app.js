@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.get(
 	"/",
-	(req, res) => res.send("<h1>HackViolet 2024 Backend</h1>") 
+	(req, res) => res.send("<h1>HackViolet 2024 Backend</h1>")
 );
 
 // Connect to MongoDB database
@@ -39,38 +39,33 @@ const router = express.Router();
 app.use("/db", router);
 
 router.route("/currshirt").get((req, res) => {
-    if(Object.keys(showShirt).length === 0){
-	shirtSchema.find().sort({created: -1}).limit(1).then(function (items) {
+	shirtSchema.find().sort({ created: -1 }).limit(1).then(function (items) {
 		// console.log(items);
 		//find all items are returns
-        showShirt = items
-        console.log(showShirt)
+		showShirt = items
+		console.log(showShirt)
 		res.json(items);
 	});
-}
-else{
-    res.json(showShirt)
-}
+
 });
 router.route("/currpants").get((req, res) => {
-    if(Object.keys(showPants).length === 0){
-        pantsSchema.find().sort({created: -1}).limit(1).then(function (items) {
-            // console.log(items);
-            //find all items are returns
-            showPants = items
-            // console.log(showShirt)
-            res.json(items);
-        });
-    }
-    else{
-        res.json(showPants)
-    }
+	pantsSchema.find().sort({ created: -1 }).limit(1).then(function (items) {
+		// console.log(items);
+		//find all items are returns
+		showPants = items
+		// console.log(showShirt)
+		res.json(items);
+	});
+
+
 });
 //get all shirt entries
 router.route("/shirts").get((req, res) => {
+
 	shirtSchema.find().then(function (items) {
 		// console.log(items);
 		//find all items are returns
+		// console.log(items)
 		res.json(items);
 	});
 });
@@ -115,8 +110,9 @@ router.route("/pants/update/:id").post((req, res) => {
 //create shirt entry
 router.route("/shirts/create").post((req, res) => {
 	// console.log(req.body);
-    // crop("shirt", req.body.image)
-	shirtSchema.create({title: req.body.title, season: req.body.season,image: req.body.image}).then((item) => {
+	// crop("shirt", req.body.image)
+	shirtSchema.create({ title: req.body.title, season: req.body.season, image: req.body.image }).then((item) => {
+		console.log(item)
 		res.json(item)
 	});
 });
@@ -124,41 +120,41 @@ router.route("/shirts/create").post((req, res) => {
 //create pants entry
 router.route("/pants/create").post((req, res) => {
 	// console.log(req.body);
-	pantsSchema.create({title: req.body.title, season: req.body.season,leftImage: req.body.leftImage, rightImage: req.body.rightImage}).then((item) => {
+	pantsSchema.create({ title: req.body.title, season: req.body.season, leftImage: req.body.leftImage, rightImage: req.body.rightImage }).then((item) => {
 		pantsSchema.find().then(function (item) {
 
-            res.json(item)
+			res.json(item)
 		});
 	});
 });
 
 //delete one shirt endpoint
 router.route("/shirts/delete/:id").delete((req, res) => {
-    pantsSchema.deleteOne({ _id: req.params.id })
+	pantsSchema.deleteOne({ _id: req.params.id })
 });
 //delete one pants endpoint
 router.route("/pants/delete/:id").delete((req, res) => {
 	// console.log(req.body);
-    pantsSchema.deleteOne({ _id: req.params.id })
-	
+	pantsSchema.deleteOne({ _id: req.params.id })
+
 });
 
 
 
-function crop(type, base64 ){
+function crop(type, base64) {
 
-    const buffer = Buffer.from(base64, "base64");
-    fs.writeFileSync("temp.png", buffer);
-Jimp.read("temp.png")
-  .then((lenna) => {
-    return lenna
-      .resize(256, 256) // resize
-      .crop(0,0,100,100)
-      .write("temp1.png") // save
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+	const buffer = Buffer.from(base64, "base64");
+	fs.writeFileSync("temp.png", buffer);
+	Jimp.read("temp.png")
+		.then((lenna) => {
+			return lenna
+				.resize(256, 256) // resize
+				.crop(0, 0, 100, 100)
+				.write("temp1.png") // save
+		})
+		.catch((err) => {
+			console.error(err);
+		});
 
 }
 
