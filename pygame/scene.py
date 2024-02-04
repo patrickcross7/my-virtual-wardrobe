@@ -2,6 +2,7 @@ import pygame
 import os
 from open_cv import open_cv_camera
 import math
+import client_caller
 
 
 def load_images(path_to_directory):
@@ -57,7 +58,7 @@ class Scene:
         return angle
 
     def display(self, landmarks, tracking=False):
-        self.screen.fill("black")
+        self.screen.fill("white")
 
         # gather the joints
         left_shoulder = landmarks.get("left_shoulder")
@@ -68,7 +69,7 @@ class Scene:
         right_ankle = landmarks.get("right_ankle")
 
         # the images to be displayed
-        chest_image = self.image_dict.get("t_shirt")
+        chest_image = self.image_dict.get("chest_image")
         leg_image = self.image_dict.get("google")
 
         # initlazie the center of the chest and the area of the chest as defaults, if the landmarks are not found
@@ -91,8 +92,8 @@ class Scene:
             and (chest_image)
         ):
 
-            print(f"left_shoulder = {left_shoulder}")
-            print(f"right_shoulder = {right_shoulder}")
+            # print(f"left_shoulder = {left_shoulder}")
+            # print(f"right_shoulder = {right_shoulder}")
             center_x = (
                 ((left_shoulder[0] + right_shoulder[0]) // 2)
                 + ((left_hip[0] + right_hip[0]) // 2)
@@ -187,9 +188,9 @@ class Scene:
             self.screen.blit(new_left_leg, (left_hip[0], left_hip[1] + 100))
             self.screen.blit(new_right_leg, (right_hip[0], right_hip[1] + 100))
 
-            print(
-                f"left leg angle = {angle_left_leg}, right leg angle = {angle_right_leg}"
-            )
+            # print(
+            #     f"left leg angle = {angle_left_leg}, right leg angle = {angle_right_leg}"
+            # )
 
         pygame.draw.circle(self.screen, (0, 255, 0), (center_x, center_y), 10)
 
@@ -231,6 +232,8 @@ class Scene:
         while running:
             # poll for events
             # pygame.QUIT event means the user clicked X to close your window
+            client_caller.get_image()
+            self.image_dict = load_images("images")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
