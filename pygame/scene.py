@@ -59,7 +59,7 @@ class Scene:
         return angle
 
     def display(self, landmarks, tracking=False):
-        self.screen.fill("white")
+        self.screen.fill("black")
 
         # gather the joints
         left_shoulder = landmarks.get("left_shoulder")
@@ -117,13 +117,7 @@ class Scene:
 
         # if the ankle landmarks are found, and the coordinates are within the screen and we have a leg image
         if (left_ankle and right_ankle) and (
-            (
-                left_ankle[0] < 1920
-                and left_ankle[1] < 1200
-                and right_ankle[0] < 1920
-                and right_ankle[1] < 1200
-            )
-            and (leg_image)
+            (left_ankle[0] < 1920 and right_ankle[0] < 1920) and (leg_image)
         ):
 
             # calculate the angle of the left leg and the right leg
@@ -198,7 +192,7 @@ class Scene:
         if chest_image:
             image_rect = chest_image.get_rect()
             image_area = image_rect.width * image_rect.height
-            scaling_factor = (area_of_chest / image_area) ** 0.5
+            scaling_factor = ((area_of_chest / image_area) ** 0.5) * 1.1
             scaled_image = pygame.transform.scale(
                 chest_image,
                 (

@@ -111,32 +111,32 @@ router.route("/pants/update/:id").post((req, res) => {
 //create shirt entry
 router.route("/shirts/create").post((req, res) => {
 	// console.log(req.body);
-	crop("shirt", req.body.image)
+	// crop("shirt", req.body.image)
 
-	imageToBase64("temp1.png") // Path to the image
-		.then(
-			(response) => {
-				shirtSchema.create({ title: req.body.title, season: req.body.season, image: response }).then((item) => {
-					res.json(item)
-				});
-			}
-		)
+	// imageToBase64("temp1.png") // Path to the image
+	// 	.then(
+	// 		(response) => {
+	shirtSchema.create({ title: req.body.title, season: req.body.season, image: req.body.image }).then((item) => {
+		res.json(item)
+	});
+	// }
+	// )
 
 });
 
 //create pants entry
 router.route("/pants/create").post((req, res) => {
 	// console.log(req.body);
-    crop("pants", req.body.image)
+	// crop("pants", req.body.image)
 
-	imageToBase64("temp1.png") // Path to the image
-		.then(
-			(response) => {
-				pantsSchema.create({ title: req.body.title, season: req.body.season, image: response }).then((item) => {
-					res.json(item)
-				});
-			}
-		)
+	// imageToBase64("temp1.png") // Path to the image
+	// 	.then(
+	// 		(response) => {
+	pantsSchema.create({ title: req.body.title, season: req.body.season, image: req.body.image }).then((item) => {
+		res.json(item)
+	});
+	// 	}
+	// )
 });
 
 //delete one shirt endpoint
