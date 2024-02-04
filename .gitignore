@@ -1,3 +1,5 @@
 .venv/
 __pycache__/
 /hackviolet24/pygame/images
+
+pygame/images/
