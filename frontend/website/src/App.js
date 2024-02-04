@@ -5,7 +5,8 @@ import Collection from './Pages/Collection';
 import DrawingPage from './Pages/DrawingPage';
 function App() {
   return (
-    <div className='main'>
+    <>
+     <div className='main'>
       
       <Router>
         <NavBar></NavBar>
@@ -18,6 +19,8 @@ function App() {
       </Router> 
 
     </div>
+    </>
+   
 
 
 

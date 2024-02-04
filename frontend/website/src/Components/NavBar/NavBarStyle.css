@@ -8,7 +8,6 @@
     list-style-type: none;
     text-decoration: none;
 
-
 }
 
 .collection {
@@ -18,7 +17,7 @@
     right: 3%;
     font-family: monospace;
     font-size: 1.5rem;
-    color: white;
+    color: rgb(255, 255, 255);
     text-decoration: none;
 }
 
@@ -29,6 +28,6 @@
     left: 3%;
     font-family: monospace;
     font-size: 1.5rem;
-    color: white;
+    color: rgb(255, 255, 255);
     text-decoration: none;
 }
