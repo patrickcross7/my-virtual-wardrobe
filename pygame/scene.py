@@ -53,12 +53,13 @@ class Scene:
     def angle_of_legs(self, x1, y1, x2, y2):
         angle = 0
         if x1 != x2:
-            angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
+            angle = ((math.atan2(abs(y2 - y1), abs(x2 - x1))) * 180) / math.pi
         return angle
 
-    def display(self, landmarks):
+    def display(self, landmarks, tracking=False):
         self.screen.fill("black")
 
+        # gather the joints
         left_shoulder = landmarks.get("left_shoulder")
         right_shoulder = landmarks.get("right_shoulder")
         left_hip = landmarks.get("left_hip")
@@ -66,20 +67,28 @@ class Scene:
         left_ankle = landmarks.get("left_ankle")
         right_ankle = landmarks.get("right_ankle")
 
-        chest_image = self.image_dict.get("instagram")
+        # the images to be displayed
+        chest_image = self.image_dict.get("t_shirt")
         leg_image = self.image_dict.get("google")
 
+        # initlazie the center of the chest and the area of the chest as defaults, if the landmarks are not found
         center_x, center_y = 0, 0
         area_of_chest = 200
-        if (left_shoulder and right_shoulder and left_hip and right_hip) and (
-            left_shoulder[0] < 1920
-            and left_shoulder[1] < 1080
-            and right_shoulder[0] < 1920
-            and right_shoulder[1] < 1080
-            and left_hip[0] < 1920
-            and left_hip[1] < 1080
-            and right_hip[0] < 1920
-            and right_hip[1] < 1080
+
+        # if the upper body landmarks are found, and the coordinates are within the screen and we have a chest image
+        if (
+            (left_shoulder and right_shoulder and left_hip and right_hip)
+            and (
+                left_shoulder[0] < 1920
+                and left_shoulder[1] < 1080
+                and right_shoulder[0] < 1920
+                and right_shoulder[1] < 1080
+                and left_hip[0] < 1920
+                and left_hip[1] < 1080
+                and right_hip[0] < 1920
+                and right_hip[1] < 1080
+            )
+            and (chest_image)
         ):
 
             print(f"left_shoulder = {left_shoulder}")
@@ -104,36 +113,47 @@ class Scene:
                 right_hip[1],
             )
 
+        # if the ankle landmarks are found, and the coordinates are within the screen and we have a leg image
         if (left_ankle and right_ankle) and (
             (
                 left_ankle[0] < 1920
-                and left_ankle[1] < 1080
+                and left_ankle[1] < 1200
                 and right_ankle[0] < 1920
-                and right_ankle[1] < 1080
+                and right_ankle[1] < 1200
             )
             and (leg_image)
         ):
 
+            # calculate the angle of the left leg and the right leg
             angle_left_leg = (
                 self.angle_of_legs(
-                    left_hip[0], left_hip[1], left_ankle[0], left_ankle[1]
+                    left_ankle[0], left_ankle[1], left_hip[0], left_hip[1]
                 )
                 * -1
             )
             angle_right_leg = (
                 self.angle_of_legs(
-                    right_hip[0], right_hip[1], right_ankle[0], right_ankle[1]
+                    right_ankle[0],
+                    right_ankle[1],
+                    right_hip[0],
+                    right_hip[1],
                 )
                 * -1
             )
 
+            if left_ankle[0] > left_hip[0]:
+                angle_left_leg += 180
+            if right_ankle[0] > right_hip[0]:
+                angle_right_leg += 180
+
             left_leg_length = math.sqrt(
-                (left_hip[0] - left_ankle[0]) ** 2 + (left_hip[1] - left_ankle[1]) ** 2
+                ((left_hip[0] - left_ankle[0]) ** 2)
+                + ((left_hip[1] - left_ankle[1]) ** 2)
             )
 
             right_leg_length = math.sqrt(
-                (right_hip[0] - right_ankle[0]) ** 2
-                + (right_hip[1] - right_ankle[1]) ** 2
+                ((right_hip[0] - right_ankle[0]) ** 2)
+                + ((right_hip[1] - right_ankle[1]) ** 2)
             )
 
             og_width, og_height = (
@@ -160,20 +180,23 @@ class Scene:
                 ),
             )
 
-            scaled_left_leg = pygame.transform.rotate(scaled_left_leg, angle_left_leg)
-            scaled_right_leg = pygame.transform.rotate(
-                scaled_right_leg, angle_right_leg
-            )
+            new_left_leg = pygame.transform.rotate(scaled_left_leg, angle_left_leg)
 
-            self.screen.blit(scaled_left_leg, (left_hip[0], left_hip[1]))
-            self.screen.blit(scaled_right_leg, (right_hip[0], right_hip[1]))
+            new_right_leg = pygame.transform.rotate(scaled_right_leg, angle_right_leg)
+
+            self.screen.blit(new_left_leg, (left_hip[0], left_hip[1] + 100))
+            self.screen.blit(new_right_leg, (right_hip[0], right_hip[1] + 100))
+
+            print(
+                f"left leg angle = {angle_left_leg}, right leg angle = {angle_right_leg}"
+            )
 
         pygame.draw.circle(self.screen, (0, 255, 0), (center_x, center_y), 10)
 
         if chest_image:
             image_rect = chest_image.get_rect()
             image_area = image_rect.width * image_rect.height
-            scaling_factor = (area_of_chest / image_area) ** 0.5
+            scaling_factor = (area_of_chest / image_area) ** 0.5 * 1.25
             scaled_image = pygame.transform.scale(
                 chest_image,
                 (
@@ -182,10 +205,10 @@ class Scene:
                 ),
             )
             image_x = center_x - scaled_image.get_rect().width // 2
-            image_y = center_y - scaled_image.get_rect().height // 2
+            image_y = center_y - (scaled_image.get_rect().height // 2) + 90
             self.screen.blit(scaled_image, (image_x, image_y))
 
-        if landmarks:
+        if landmarks and tracking:
             for landmark in landmarks:
                 xPos, yPos = landmarks[landmark]
 
