@@ -127,16 +127,16 @@ router.route("/shirts/create").post((req, res) => {
 //create pants entry
 router.route("/pants/create").post((req, res) => {
 	// console.log(req.body);
-	// crop("pants", req.body.image)
+	crop("pants", req.body.image)
 
-	// imageToBase64("temp1.png") // Path to the image
-	// 	.then(
-	// 		(response) => {
-	pantsSchema.create({ title: req.body.title, season: req.body.season, image: req.body.image }).then((item) => {
+	imageToBase64("temp1.png") // Path to the image
+		.then(
+			(response) => {
+	pantsSchema.create({ title: req.body.title, season: req.body.season, image: response }).then((item) => {
 		res.json(item)
 	});
-	// 	}
-	// )
+		}
+	)
 });
 
 //delete one shirt endpoint
@@ -159,7 +159,7 @@ function crop(type, base64) {
 	Jimp.read("temp.png")
 		.then((lenna) => {
 			return lenna
-				.crop(44, 94, 426, 261)
+				.crop(44, 94,500,166)
 				.write("temp1.png") // save
 		})
 		.catch((err) => {
