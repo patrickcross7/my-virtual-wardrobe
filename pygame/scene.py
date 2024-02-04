@@ -1,3 +1,4 @@
+import time
 import pygame
 import os
 from open_cv import open_cv_camera
@@ -70,7 +71,7 @@ class Scene:
 
         # the images to be displayed
         chest_image = self.image_dict.get("chest_image")
-        leg_image = self.image_dict.get("google")
+        leg_image = self.image_dict.get("leg_image")
 
         # initlazie the center of the chest and the area of the chest as defaults, if the landmarks are not found
         center_x, center_y = 0, 0
@@ -197,7 +198,7 @@ class Scene:
         if chest_image:
             image_rect = chest_image.get_rect()
             image_area = image_rect.width * image_rect.height
-            scaling_factor = (area_of_chest / image_area) ** 0.5 * 1.25
+            scaling_factor = (area_of_chest / image_area) ** 0.5
             scaled_image = pygame.transform.scale(
                 chest_image,
                 (
@@ -206,7 +207,7 @@ class Scene:
                 ),
             )
             image_x = center_x - scaled_image.get_rect().width // 2
-            image_y = center_y - (scaled_image.get_rect().height // 2) + 90
+            image_y = center_y - (scaled_image.get_rect().height // 2)
             self.screen.blit(scaled_image, (image_x, image_y))
 
         if landmarks and tracking:
@@ -228,12 +229,17 @@ class Scene:
 
         cv_obj = open_cv_camera()
 
+        last_time = time.time()
         running = True
         while running:
             # poll for events
             # pygame.QUIT event means the user clicked X to close your window
-            client_caller.get_image()
-            self.image_dict = load_images("images")
+            if time.time() - last_time > 1:
+                client_caller.get_chest()
+                client_caller.get_legs()
+                self.image_dict = load_images("images")
+                last_time = time.time()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
