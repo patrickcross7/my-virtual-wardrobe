@@ -60,6 +60,30 @@ function CollectionCards() {
             pic: pic
     
         },
+        {
+            title: "Grey T-shirt",
+            text: "A normal t-shirt",
+            pic: pic
+    
+        },
+        {
+            title: "Grey T-shirt",
+            text: "A normal t-shirt",
+            pic: pic
+    
+        },
+        {
+            title: "Grey T-shirt",
+            text: "A normal t-shirt",
+            pic: pic
+    
+        },
+        {
+            title: "Grey T-shirt",
+            text: "A normal t-shirt",
+            pic: pic
+    
+        },
         
         
 
