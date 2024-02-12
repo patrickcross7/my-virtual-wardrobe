@@ -1,9 +1,9 @@
 # My Virtual Wardrobe
 
 Contributors:
-Justice Jackson
-Pierre Tran
-Daniel Koo
+Justice Jackson,
+Pierre Tran,
+Daniel Koo,
 Patrick Cross
 
 ```
